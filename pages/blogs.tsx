@@ -48,25 +48,29 @@ const BlogsPage = ({ blogs }: Props) => {
 };
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  let blogs: Blog[] = [];
   try {
     const res = await fetch(`https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts`);
     if (!res.ok) {
       throw new Error("Failed to fetch blog posts");
     }
     const data = await res.json();
-    blogs = data.blog_posts;
+    const blogs: Blog[] = data.blog_posts;
+
+    return {
+      props: {
+        blogs,
+      },
+      revalidate: 10,
+    };
   } catch (error) {
     console.error("Error fetching blogs:", error);
-    blogs = [];
+    return {
+      props: {
+        blogs: [], // Laat de blogs leeg als er een fout is
+      },
+      revalidate: 10, // Blijf proberen om de blogs opnieuw te valideren
+    };
   }
-
-  return {
-    props: {
-      blogs,
-    },
-    revalidate: 10,
-  };
 };
 
 export default BlogsPage;
