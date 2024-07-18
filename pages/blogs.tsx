@@ -51,36 +51,16 @@ const BlogsPage = ({ blogs }: Props) => {
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   try {
-    console.log("Fetching blog posts...");
-
     let blogs: Blog[] = [];
 
-    // Probeer eerst blogposts op te halen uit localStorage
-    const storedBlogs = localStorage.getItem('fallbackBlogs');
-    if (storedBlogs) {
-      fallbackBlogs = JSON.parse(storedBlogs);
-      console.log("Using fallback blogs from localStorage:", fallbackBlogs);
-    }
-
-    const res = await fetch(`https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts`);
+    const res = await fetch(
+      `https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts`
+    );
     if (res.ok) {
-      console.log("API call successful, fetching data...");
-
       const data = await res.json();
       blogs = data.blog_posts;
-
-      console.log("Fetched blog posts:", blogs);
-
-      // Sla de opgehaalde blogposts op in localStorage
-      localStorage.setItem('fallbackBlogs', JSON.stringify(blogs));
-
-      fallbackBlogs = blogs;
     } else {
       console.warn(`Failed to fetch blog posts, status ${res.status}`);
-
-      blogs = fallbackBlogs;
-
-      console.log("Using fallback blogs:", blogs);
     }
 
     return {
@@ -92,13 +72,9 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
   } catch (error) {
     console.error("Error fetching blogs:", error);
 
-    const blogs = fallbackBlogs;
-
-    console.log("Using fallback blogs due to error:", blogs);
-
     return {
       props: {
-        blogs,
+        blogs: [],
       },
       revalidate: 10,
     };
