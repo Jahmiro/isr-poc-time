@@ -62,24 +62,22 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     const data = await res.json();
     const blogs: Blog[] = data.blog_posts;
 
-    // Opslaan van de blogs die tijdens build time beschikbaar waren in fallbackBlogs
     fallbackBlogs = blogs;
 
     return {
       props: {
         blogs,
       },
-      revalidate: 10, // Hervalidateer na 10 seconden
+      revalidate: 10, 
     };
   } catch (error) {
     console.error("Error fetching blogs:", error);
 
-    // Fallback naar build-time data als de API niet beschikbaar is
     return {
       props: {
         blogs: fallbackBlogs,
       },
-      revalidate: 10, // Probeer na 10 seconden opnieuw
+      revalidate: 10, 
     };
   }
 };
