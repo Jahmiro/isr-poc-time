@@ -1,10 +1,10 @@
 // pages/blogs.tsx
 
-import fs from 'fs';
-import path from 'path';
 import Navigation from "@/components/navigation";
 import { GetStaticProps } from "next";
 import Link from "next/link";
+import fs from 'fs';
+import path from 'path';
 
 type Blog = {
   id: number;
@@ -50,34 +50,42 @@ const BlogsPage = ({ blogs }: Props) => {
 };
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  let blogs: Blog[] = [];
-  const fallbackFilePath = path.join(process.cwd(), 'public', 'blogs-fallback.json');
-
+  const blogsFilePath = path.join(process.cwd(), 'savedBlogs.json');
+  
   try {
     const res = await fetch(`https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts`);
     if (!res.ok) {
       throw new Error("Failed to fetch blog posts");
     }
     const data = await res.json();
-    blogs = data.blog_posts;
+    const blogs: Blog[] = data.blog_posts;
 
-    // Save the fetched blogs to the fallback file
-    fs.writeFileSync(fallbackFilePath, JSON.stringify(blogs));
+    // Save the blogs to a file for fallback
+    fs.writeFileSync(blogsFilePath, JSON.stringify(blogs, null, 2));
+
+    return {
+      props: {
+        blogs,
+      },
+      revalidate: 10,
+    };
   } catch (error) {
     console.error("Error fetching blogs:", error);
-    if (fs.existsSync(fallbackFilePath)) {
-      // Read blogs from the fallback file
-      const fallbackData = fs.readFileSync(fallbackFilePath, 'utf-8');
-      blogs = JSON.parse(fallbackData);
-    }
-  }
 
-  return {
-    props: {
-      blogs,
-    },
-    revalidate: 10,
-  };
+    // Read the fallback blogs from the file
+    let blogs: Blog[] = [];
+    if (fs.existsSync(blogsFilePath)) {
+      const fileData = fs.readFileSync(blogsFilePath, 'utf-8');
+      blogs = JSON.parse(fileData);
+    }
+
+    return {
+      props: {
+        blogs,
+      },
+      revalidate: 10,
+    };
+  }
 };
 
 export default BlogsPage;
