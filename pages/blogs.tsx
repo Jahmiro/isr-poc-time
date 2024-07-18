@@ -1,5 +1,7 @@
 // pages/blogs.tsx
 
+import fs from 'fs';
+import path from 'path';
 import Navigation from "@/components/navigation";
 import { GetStaticProps } from "next";
 import Link from "next/link";
@@ -48,29 +50,34 @@ const BlogsPage = ({ blogs }: Props) => {
 };
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
+  let blogs: Blog[] = [];
+  const fallbackFilePath = path.join(process.cwd(), 'public', 'blogs-fallback.json');
+
   try {
     const res = await fetch(`https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts`);
     if (!res.ok) {
       throw new Error("Failed to fetch blog posts");
     }
     const data = await res.json();
-    const blogs: Blog[] = data.blog_posts;
+    blogs = data.blog_posts;
 
-    return {
-      props: {
-        blogs,
-      },
-      revalidate: 10,
-    };
+    // Save the fetched blogs to the fallback file
+    fs.writeFileSync(fallbackFilePath, JSON.stringify(blogs));
   } catch (error) {
     console.error("Error fetching blogs:", error);
-    return {
-      props: {
-        blogs: [], // Laat de blogs leeg als er een fout is
-      },
-      revalidate: 10, // Blijf proberen om de blogs opnieuw te valideren
-    };
+    if (fs.existsSync(fallbackFilePath)) {
+      // Read blogs from the fallback file
+      const fallbackData = fs.readFileSync(fallbackFilePath, 'utf-8');
+      blogs = JSON.parse(fallbackData);
+    }
   }
+
+  return {
+    props: {
+      blogs,
+    },
+    revalidate: 10,
+  };
 };
 
 export default BlogsPage;
