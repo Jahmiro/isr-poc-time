@@ -53,7 +53,7 @@ const BlogsPage = ({ blogs }: Props) => {
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   try {
-    const res = await fetch(`https://example.com/non-existent-endpoint`);
+    const res = await fetch(`https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts`);
     if (!res.ok) {
       throw new Error("Failed to fetch blog posts");
     }
