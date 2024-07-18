@@ -1,5 +1,3 @@
-// pages/blogs.tsx
-
 import Navigation from "@/components/navigation";
 import { GetStaticProps } from "next";
 import Link from "next/link";
@@ -57,6 +55,13 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 
     let blogs: Blog[] = [];
 
+    // Probeer eerst blogposts op te halen uit localStorage
+    const storedBlogs = localStorage.getItem('fallbackBlogs');
+    if (storedBlogs) {
+      fallbackBlogs = JSON.parse(storedBlogs);
+      console.log("Using fallback blogs from localStorage:", fallbackBlogs);
+    }
+
     const res = await fetch(`https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts`);
     if (res.ok) {
       console.log("API call successful, fetching data...");
@@ -65,6 +70,9 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
       blogs = data.blog_posts;
 
       console.log("Fetched blog posts:", blogs);
+
+      // Sla de opgehaalde blogposts op in localStorage
+      localStorage.setItem('fallbackBlogs', JSON.stringify(blogs));
 
       fallbackBlogs = blogs;
     } else {
