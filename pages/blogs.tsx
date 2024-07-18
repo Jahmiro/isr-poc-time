@@ -3,7 +3,6 @@
 import Navigation from "@/components/navigation";
 import { GetStaticProps } from "next";
 import Link from "next/link";
-import { useState, useEffect } from "react";
 
 type Blog = {
   id: number;
@@ -16,22 +15,6 @@ type Props = {
 };
 
 const BlogsPage = ({ blogs }: Props) => {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (blogs.length > 0) {
-      setIsLoading(false);
-    }
-  }, [blogs]);
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
   return (
     <>
       <Navigation />
@@ -65,29 +48,25 @@ const BlogsPage = ({ blogs }: Props) => {
 };
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
+  let blogs: Blog[] = [];
   try {
     const res = await fetch(`https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts`);
     if (!res.ok) {
       throw new Error("Failed to fetch blog posts");
     }
     const data = await res.json();
-    const blogs: Blog[] = data.blog_posts;
-
-    return {
-      props: {
-        blogs,
-      },
-      revalidate: 10,
-    };
+    blogs = data.blog_posts;
   } catch (error) {
     console.error("Error fetching blogs:", error);
-    return {
-      props: {
-        blogs: [],
-      },
-      revalidate: 10,
-    };
+    blogs = [];
   }
+
+  return {
+    props: {
+      blogs,
+    },
+    revalidate: 10,
+  };
 };
 
 export default BlogsPage;
