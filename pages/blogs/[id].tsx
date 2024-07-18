@@ -53,6 +53,7 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
         blog,
         error: null,
       },
+      revalidate: 10,
     };
   } catch (error) {
     console.error(`Error fetching blog with id ${id}:`, error);
