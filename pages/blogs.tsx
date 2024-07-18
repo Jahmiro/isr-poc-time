@@ -53,29 +53,46 @@ const BlogsPage = ({ blogs }: Props) => {
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   try {
-    const res = await fetch(`https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts`);
-    if (!res.ok) {
-      throw new Error("Failed to fetch blog posts");
-    }
-    const data = await res.json();
-    const blogs: Blog[] = data.blog_posts;
+    console.log("Fetching blog posts...");
 
-    fallbackBlogs = blogs;
+    let blogs: Blog[] = [];
+
+    const res = await fetch(`https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts`);
+    if (res.ok) {
+      console.log("API call successful, fetching data...");
+
+      const data = await res.json();
+      blogs = data.blog_posts;
+
+      console.log("Fetched blog posts:", blogs);
+
+      fallbackBlogs = blogs;
+    } else {
+      console.warn(`Failed to fetch blog posts, status ${res.status}`);
+
+      blogs = fallbackBlogs;
+
+      console.log("Using fallback blogs:", blogs);
+    }
 
     return {
       props: {
         blogs,
       },
-      revalidate: 10, 
+      revalidate: 10,
     };
   } catch (error) {
     console.error("Error fetching blogs:", error);
 
+    const blogs = fallbackBlogs;
+
+    console.log("Using fallback blogs due to error:", blogs);
+
     return {
       props: {
-        blogs: fallbackBlogs,
+        blogs,
       },
-      revalidate: 10, 
+      revalidate: 10,
     };
   }
 };
