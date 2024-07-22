@@ -88,7 +88,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
       props: {
         blogs,
       },
-      revalidate: 10,
+      revalidate: 30,
     };
   } catch (error) {
     console.error("Error fetching blogs:", error);
@@ -96,7 +96,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
       props: {
         blogs: [],
       },
-      revalidate: 10,
+      revalidate: 30,
     };
   }
 };
