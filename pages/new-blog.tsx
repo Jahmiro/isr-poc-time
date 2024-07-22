@@ -13,7 +13,7 @@ const NewBlogPage = () => {
     e.preventDefault();
 
     const response = await fetch(
-      "https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts/add-blog-post",
+      "https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/add-blog-post",
       {
         method: "POST",
         headers: {
