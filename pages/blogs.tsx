@@ -52,15 +52,18 @@ async function getBlogs() {
     if (!response.ok) {
       throw new Error(`Error fetching blogs: ${response.statusText}`);
     }
-    return await response.json();
+    const data = await response.json();
+    console.log('Fetched data:', data); // Debugging line to check the structure
+    return Array.isArray(data) ? data : []; // Ensure data is an array
   } catch (error) {
-    console.error(error);
-    return []; // Return an empty array or handle as needed
+    console.error('Error in getBlogs:', error);
+    return []; // Return an empty array in case of error
   }
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const blogs = await getBlogs();
+  console.log('Blogs data for getStaticProps:', blogs); // Debugging line to check the structure
   return {
     props: {
       blogs,
