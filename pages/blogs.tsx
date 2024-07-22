@@ -1,7 +1,6 @@
 import Navigation from "@/components/navigation";
 import { GetStaticProps } from "next";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 type Blog = {
   id: number;
@@ -14,31 +13,6 @@ type Props = {
 };
 
 const BlogsPage = ({ blogs }: Props) => {
-  const [localBlogs, setLocalBlogs] = useState<Blog[]>(blogs);
-
-  useEffect(() => {
-    const cachedBlogs = localStorage.getItem('blogs');
-    if (cachedBlogs) {
-      setLocalBlogs(JSON.parse(cachedBlogs));
-    }
-
-    const interval = setInterval(async () => {
-      try {
-        const res = await fetch('https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts');
-        if (res.ok) {
-          const data = await res.json();
-          const newBlogs: Blog[] = data.blog_posts || [];
-          setLocalBlogs(newBlogs);
-          localStorage.setItem('blogs', JSON.stringify(newBlogs));
-        }
-      } catch (error) {
-        console.error("Error fetching blogs:", error);
-      }
-    }, 5000); 
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <>
       <Navigation />
@@ -50,8 +24,8 @@ const BlogsPage = ({ blogs }: Props) => {
             </h2>
           </div>
           <div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-            {localBlogs.length > 0 ? (
-              localBlogs.map((blog) => (
+            {blogs.length > 0 ? (
+              blogs.map((blog) => (
                 <Link href={`/blogs/${blog.id}`} key={blog.id}>
                   <article className="flex max-w-xl flex-col items-start justify-between border rounded-lg overflow-hidden">
                     <div className="group relative p-6">
@@ -88,7 +62,6 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
       props: {
         blogs,
       },
-      revalidate: 30,
     };
   } catch (error) {
     console.error("Error fetching blogs:", error);
@@ -96,9 +69,9 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
       props: {
         blogs: [],
       },
-      revalidate: 30,
     };
   }
 };
+
 
 export default BlogsPage;

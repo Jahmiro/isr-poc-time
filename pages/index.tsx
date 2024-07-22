@@ -18,16 +18,15 @@ const Page: React.FC<Props> = ({ initialCurrentTime }) => {
           throw new Error("Failed to fetch current time");
         }
         const data = await res.json();
-        setCurrentTime(data.time); // Set the current time from the API
+        setCurrentTime(data.time); 
       } catch (error) {
         console.error("Error fetching current time:", error);
-        // If there's an error fetching the time, keep the last known time
       }
     };
 
-    const interval = setInterval(fetchCurrentTime, 5000); // Refresh time every 5 seconds
+    const interval = setInterval(fetchCurrentTime, 5000);
 
-    return () => clearInterval(interval); // Clean up interval on component unmount
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -68,17 +67,17 @@ export const getStaticProps = async () => {
 
     return {
       props: {
-        initialCurrentTime: currentTime || "", // Pass initial current time as prop
+        initialCurrentTime: currentTime || "", 
       },
-      revalidate: 5, // Revalidate every 5 seconds (for ISR)
+      revalidate: 5, 
     };
   } catch (error) {
     console.error("Error fetching current time:", error);
     return {
       props: {
-        initialCurrentTime: "", // Show empty string if error (fallback)
+        initialCurrentTime: "", 
       },
-      revalidate: 5, // Retry every 5 seconds on error (for ISR)
+      revalidate: 5,
     };
   }
 };
