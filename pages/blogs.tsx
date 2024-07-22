@@ -1,5 +1,5 @@
 import Navigation from "@/components/navigation";
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -20,6 +20,8 @@ const BlogsPage = ({ blogs }: Props) => {
     const cachedBlogs = localStorage.getItem('blogs');
     if (cachedBlogs) {
       setLocalBlogs(JSON.parse(cachedBlogs));
+    } else {
+      localStorage.setItem('blogs', JSON.stringify(blogs));
     }
 
     const interval = setInterval(async () => {
@@ -34,10 +36,10 @@ const BlogsPage = ({ blogs }: Props) => {
       } catch (error) {
         console.error("Error fetching blogs:", error);
       }
-    }, 5000); // 
+    }, 5000); 
 
     return () => clearInterval(interval);
-  }, []);
+  }, [blogs]);
 
   return (
     <>
@@ -75,7 +77,9 @@ const BlogsPage = ({ blogs }: Props) => {
   );
 };
 
-export const getStaticProps: GetStaticProps<Props> = async () => {
+export const getServerSideProps: GetServerSideProps<Props> = async ({ res }) => {
+  res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=300');
+
   try {
     const res = await fetch('https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts');
     if (!res.ok) {
@@ -88,15 +92,14 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
       props: {
         blogs,
       },
-      revalidate: 10,
     };
   } catch (error) {
     console.error("Error fetching blogs:", error);
+    const cachedBlogs = JSON.parse(localStorage.getItem('blogs') || '[]');
     return {
       props: {
-        blogs: [],
+        blogs: cachedBlogs,
       },
-      revalidate: 10,
     };
   }
 };
