@@ -26,7 +26,7 @@ const BlogsPage = ({ blogs }: Props) => {
           <div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
             {blogs.map((blog) => (
               <Link href={`/blogs/${blog.id}`} key={blog.id}>
-                <article className="flex max-w-xl flex-col items-start justify-between border rounded-lg overflow-hidden">
+                <a className="flex max-w-xl flex-col items-start justify-between border rounded-lg overflow-hidden">
                   <div className="group relative p-6">
                     <h3 className="mt-3 text-lg font-semibold leading-6 text-tertiary-800 group-hover:text-gray-600">
                       {blog.title}
@@ -35,7 +35,7 @@ const BlogsPage = ({ blogs }: Props) => {
                       {blog.content}
                     </p>
                   </div>
-                </article>
+                </a>
               </Link>
             ))}
           </div>
@@ -45,30 +45,27 @@ const BlogsPage = ({ blogs }: Props) => {
   );
 };
 
-export const getStaticProps: GetStaticProps<Props> = async () => {
+async function getBlogs() {
+  const endpoint = 'https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts';
   try {
-    const res = await fetch(`https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts`);
-    if (!res.ok) {
-      throw new Error("Failed to fetch blog posts");
+    const response = await fetch(endpoint, { next: { tags: ['blog-posts'] } });
+    if (!response.ok) {
+      throw new Error(`Error fetching blogs: ${response.statusText}`);
     }
-    const data = await res.json();
-    const blogs: Blog[] = data.blog_posts;
-
-    return {
-      props: {
-        blogs,
-      },
-      revalidate: 10, 
-    };
+    return await response.json();
   } catch (error) {
-    console.error("Error fetching blogs:", error);
-    return {
-      props: {
-        blogs: [],
-      },
-      revalidate: 10,
-    };
+    console.error(error);
+    return []; // Return an empty array or handle as needed
   }
+}
+
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const blogs = await getBlogs();
+  return {
+    props: {
+      blogs,
+    },
+  };
 };
 
 export default BlogsPage;
