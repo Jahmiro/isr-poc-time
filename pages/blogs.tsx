@@ -21,11 +21,23 @@ const BlogsPage = ({ blogs }: Props) => {
     if (cachedBlogs) {
       setLocalBlogs(JSON.parse(cachedBlogs));
     }
-  }, []);
 
-  useEffect(() => {
-    localStorage.setItem('blogs', JSON.stringify(localBlogs));
-  }, [localBlogs]);
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch('https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts');
+        if (res.ok) {
+          const data = await res.json();
+          const newBlogs: Blog[] = data.blog_posts || [];
+          setLocalBlogs(newBlogs);
+          localStorage.setItem('blogs', JSON.stringify(newBlogs));
+        }
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+      }
+    }, 5000); // 
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <>
