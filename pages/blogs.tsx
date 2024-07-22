@@ -1,4 +1,3 @@
-// pages/blogs.tsx
 import Navigation from "@/components/navigation";
 import { GetStaticProps } from "next";
 import Link from "next/link";
@@ -28,7 +27,7 @@ const BlogsPage = ({ blogs }: Props) => {
             {blogs.length > 0 ? (
               blogs.map((blog) => (
                 <Link href={`/blogs/${blog.id}`} key={blog.id}>
-                  <a className="flex max-w-xl flex-col items-start justify-between border rounded-lg overflow-hidden">
+                  <article className="flex max-w-xl flex-col items-start justify-between border rounded-lg overflow-hidden">
                     <div className="group relative p-6">
                       <h3 className="mt-3 text-lg font-semibold leading-6 text-tertiary-800 group-hover:text-gray-600">
                         {blog.title}
@@ -37,7 +36,7 @@ const BlogsPage = ({ blogs }: Props) => {
                         {blog.content}
                       </p>
                     </div>
-                  </a>
+                  </article>
                 </Link>
               ))
             ) : (
@@ -50,32 +49,28 @@ const BlogsPage = ({ blogs }: Props) => {
   );
 };
 
-async function getBlogs(): Promise<Blog[]> {
-  const endpoint = 'https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts';
-  try {
-    const response = await fetch(endpoint, {
-      next: { tags: ['blogs'] }
-    });
-    if (!response.ok) {
-      throw new Error(`Error fetching blogs: ${response.statusText}`);
-    }
-    const data = await response.json();
-    console.log('Fetched data:', data); 
-    return Array.isArray(data) ? data : []; 
-  } catch (error) {
-    console.error('Error in getBlogs:', error);
-    return []; 
-  }
-}
-
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  const blogs = await getBlogs();
-  console.log('Blogs data for getStaticProps:', blogs);
-  return {
-    props: {
-      blogs,
-    },
-  };
+  try {
+    const res = await fetch('https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts');
+    if (!res.ok) {
+      throw new Error("Failed to fetch blog posts");
+    }
+    const data = await res.json();
+    const blogs: Blog[] = data.blog_posts || [];
+
+    return {
+      props: {
+        blogs,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching blogs:", error);
+    return {
+      props: {
+        blogs: [],
+      },
+    };
+  }
 };
 
 export default BlogsPage;
