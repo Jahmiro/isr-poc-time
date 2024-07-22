@@ -48,22 +48,22 @@ const BlogsPage = ({ blogs }: Props) => {
 async function getBlogs() {
   const endpoint = 'https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts';
   try {
-    const response = await fetch(endpoint, { next: { tags: ['blog-posts'] } });
+    const response = await fetch(endpoint);
     if (!response.ok) {
       throw new Error(`Error fetching blogs: ${response.statusText}`);
     }
     const data = await response.json();
-    console.log('Fetched data:', data); // Debugging line to check the structure
-    return Array.isArray(data) ? data : []; // Ensure data is an array
+    console.log('Fetched data:', data); // Ensure this logs an array
+    return Array.isArray(data) ? data : []; 
   } catch (error) {
     console.error('Error in getBlogs:', error);
-    return []; // Return an empty array in case of error
+    return []; 
   }
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const blogs = await getBlogs();
-  console.log('Blogs data for getStaticProps:', blogs); // Debugging line to check the structure
+  console.log('Blogs data for getStaticProps:', blogs); // Ensure this logs the expected data
   return {
     props: {
       blogs,
