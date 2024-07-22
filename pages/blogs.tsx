@@ -1,3 +1,4 @@
+// pages/blogs.tsx
 import Navigation from "@/components/navigation";
 import { GetStaticProps } from "next";
 import Link from "next/link";
@@ -45,15 +46,17 @@ const BlogsPage = ({ blogs }: Props) => {
   );
 };
 
-async function getBlogs() {
+async function getBlogs(): Promise<Blog[]> {
   const endpoint = 'https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts';
   try {
-    const response = await fetch(endpoint);
+    const response = await fetch(endpoint, {
+      next: { tags: ['blogs'] }
+    });
     if (!response.ok) {
       throw new Error(`Error fetching blogs: ${response.statusText}`);
     }
     const data = await response.json();
-    console.log('Fetched data:', data); // Ensure this logs an array
+    console.log('Fetched data:', data); 
     return Array.isArray(data) ? data : []; 
   } catch (error) {
     console.error('Error in getBlogs:', error);
@@ -63,7 +66,7 @@ async function getBlogs() {
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const blogs = await getBlogs();
-  console.log('Blogs data for getStaticProps:', blogs); // Ensure this logs the expected data
+  console.log('Blogs data for getStaticProps:', blogs);
   return {
     props: {
       blogs,

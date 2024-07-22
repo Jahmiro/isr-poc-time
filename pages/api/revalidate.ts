@@ -1,7 +1,7 @@
-import { revalidatePath, revalidateTag } from 'next/cache'
-import { redirect } from 'next/navigation'
+import { revalidateTag } from 'next/cache';
+import { redirect } from 'next/navigation';
 
-export async function revalidateUsers() {
-    revalidateTag('blog-posts')
-    redirect('/')
-  }
+export async function revalidateBlogs() {
+  revalidateTag('blogs'); 
+  redirect('/');
+}
