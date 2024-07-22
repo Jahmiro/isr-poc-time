@@ -8,6 +8,7 @@ const Navigation = () => {
       <div className="flex space-x-10 mx-auto">
         <Link href="/">Home</Link>
         <Link href="/blogs">Blogs</Link>
+        <Link href="/new-blog">Create New Blog Post</Link> {/* Nieuwe link toegevoegd */}
       </div>
     </nav>
   );
