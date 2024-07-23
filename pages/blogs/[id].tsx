@@ -68,6 +68,28 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
 const BlogDetail: React.FC<Props> = ({ blog, error }) => {
   const router = useRouter();
 
+  const handleDelete = async () => {
+    if (!blog) return;
+
+    try {
+      const response = await fetch(
+        `https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/delete-blog-post/${blog.id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        // Redirect to the list of blogs
+        router.push("/blogs");
+      } else {
+        console.error("Failed to delete blog post");
+      }
+    } catch (error) {
+      console.error("Error deleting blog post", error);
+    }
+  };
+
   if (router.isFallback) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -95,6 +117,12 @@ const BlogDetail: React.FC<Props> = ({ blog, error }) => {
               className="text-secondary-500 py-2 rounded-lg mb-[10px] hover:bg-blue-700 hover:text-secondary-600"
             >
               Terug naar blogs
+            </button>
+            <button
+              onClick={handleDelete}
+              className="text-warning-500 px-10 rounded-lg mb-[10px] hover:bg-blue-700 hover:text-warning-400"
+            >
+              Verwijder Blogpost
             </button>
             <h2 className="text-3xl font-bold tracking-tight text-tertiary-800 sm:text-4xl">
               {blog.title}
