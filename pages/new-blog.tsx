@@ -1,5 +1,3 @@
-// pages/new-blog.tsx
-
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Navigation from "@/components/navigation";
@@ -24,7 +22,22 @@ const NewBlogPage = () => {
     );
 
     if (response.ok) {
-      router.push("/blogs");
+      try {
+        const revalidateResponse = await fetch(
+          "https://isr-poc-time.vercel.app/api/revalidate?gY$8@b%5E3E*z!R7p#Kf&wQ1mX%5EH9tL!c4BvN5%25Yp*2J",
+          {
+            method: "POST",
+          }
+        );
+
+        if (revalidateResponse.ok) {
+          router.push("/blogs");
+        } else {
+          console.error("Failed to revalidate");
+        }
+      } catch (err) {
+        console.error("Error revalidating", err);
+      }
     } else {
       console.error("Failed to add blog post");
     }
