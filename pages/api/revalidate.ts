@@ -15,3 +15,4 @@ export default async function handler(
     return res.json({ revalidated: true })
 
 }
+
