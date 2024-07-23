@@ -120,7 +120,7 @@ const BlogDetail: React.FC<Props> = ({ blog, error }) => {
             </button>
             <button
               onClick={handleDelete}
-              className="text-warning-500 px-10 rounded-lg mb-[10px] hover:bg-blue-700 hover:text-warning-400"
+              className="text-warning-500 px-10 rounded-lg mb-[10px] hover:bg-blue-700 hover:text-warning-600"
             >
               Verwijder Blogpost
             </button>
