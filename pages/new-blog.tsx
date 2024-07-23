@@ -33,11 +33,11 @@ const NewBlogPage = () => {
   return (
     <>
       <Navigation />
-      <div className="max-w-3xl mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-tertiary-800 mb-4">
+      <div className="max-w-3xl mx-auto p-8 bg-white border  rounded-lg shadow-lg mt-10">
+        <h1 className="text-3xl font-bold text-tertiary-800 mb-6 text-center">
           Create a New Blog Post
         </h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex flex-col">
             <label htmlFor="title" className="font-semibold text-tertiary-800 mb-2">
               Title
@@ -48,7 +48,7 @@ const NewBlogPage = () => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              className="p-2 border border-gray-300 text-tertiary-800 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="p-3 border border-gray-300 text-tertiary-800 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
           <div className="flex flex-col">
@@ -63,12 +63,12 @@ const NewBlogPage = () => {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               required
-              className="p-2 border border-gray-300 text-tertiary-800 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none min-h-[200px]"
+              className="p-3 border border-gray-300 text-tertiary-800 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none min-h-[200px]"
             />
           </div>
           <button
             type="submit"
-            className="bg-primary-500 text-tertiary-800 px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 ease-in-out"
+            className="bg-primary-500 text-tertiary-800 px-6 py-3 rounded-md hover:bg-indigo-700 transition duration-300 ease-in-out font-semibold w-full"
           >
             Add Blog Post
           </button>
