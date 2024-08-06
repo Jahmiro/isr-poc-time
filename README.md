@@ -27,14 +27,9 @@ Om on-demand revalidation te testen:
 
 1. Maak een nieuwe blogpost aan via (https://isr-poc-time.vercel.app).
 
-2. Maak een `.env` bestand aan met de volgende inhoud:
-    ```env
-    MY_SECRET_TOKEN=TestToken
-    ```
-
-3. Verstuur een POST-verzoek naar de revalidation API-endpoint om de cache te verversen. Dit kan worden gedaan met Postman of door de URL in je adresbalk te plakken:
+2. Verstuur een POST-verzoek naar de revalidation API-endpoint om de cache te verversen. Dit kan worden gedaan met Postman of door de URL in je adresbalk te plakken:
     ```
     https://isr-poc-time.vercel.app/api/revalidate?path=/blogs&secret=TestToken
     ```
 
-   Dit verzoek zal de pagina met het pad `/blogs` opnieuw genereren.
+   Dit verzoek zal de pagina met het pad `/blogs` opnieuw genereren. Refresh de pagina om de nieuwe blog te zien.
